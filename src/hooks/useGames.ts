@@ -18,6 +18,7 @@ export interface Games {
 const useGames = () => {
   const [games, setGames] = useState<Games[]>([]);
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   interface FetchGames {
     count: number;
@@ -25,15 +26,18 @@ const useGames = () => {
   }
   useEffect(() => {
     const controller = new AbortController();
+    setIsLoading(true);
     const fetchGames = async () => {
       try {
         const res = await apiClient.get<FetchGames>("/games", {
           signal: controller.signal,
         });
         setGames(res.data.results);
+        setIsLoading(false);
       } catch (error) {
         if (error instanceof CanceledError) return;
         setError((error as AxiosError).message);
+        setIsLoading(false);
       }
     };
     fetchGames();
@@ -41,7 +45,7 @@ const useGames = () => {
     return () => controller.abort();
   }, []);
 
-  return { games, error };
+  return { games, error, isLoading };
 };
 
 export default useGames;
