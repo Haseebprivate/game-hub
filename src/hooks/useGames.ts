@@ -2,14 +2,14 @@ import { useState, useEffect } from "react";
 import apiClient from "../services/api-client";
 import { AxiosError, CanceledError } from "axios";
 
+export interface Games {
+  id: number;
+  name: string;
+  background_image: string;
+}
 const useGames = () => {
   const [games, setGames] = useState<Games[]>([]);
   const [error, setError] = useState("");
-
-  interface Games {
-    id: number;
-    name: string;
-  }
 
   interface FetchGames {
     count: number;
